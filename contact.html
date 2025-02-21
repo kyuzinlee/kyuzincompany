@@ -73,35 +73,32 @@ const postsQuery = query(collection(db, "posts"), orderBy("timestamp", "desc"));
 let renderedPostIds = new Set();
 
 onSnapshot(postsQuery, (snapshot) => {
+    postsContainer.innerHTML = ""; // 기존 내용 초기화 (중복 방지)
+
     if (snapshot.empty || snapshot.docs.length === 0) {  
         postsContainer.innerHTML = "<p>등록된 게시글이 없습니다.</p>";
         return;
     }
 
     snapshot.docs.forEach((doc) => {
-        if (!renderedPostIds.has(doc.id)) {  // ✅ 새로운 게시글만 추가
-            renderedPostIds.add(doc.id);
-            const post = doc.data();
-            const postElement = document.createElement("div");
-            postElement.classList.add("post");
+        const post = doc.data();
+        const postElement = document.createElement("div");
+        postElement.classList.add("post");
 
-            let postTime = "시간 정보 없음";
-            if (post.timestamp?.toDate) {  
-                postTime = new Date(post.timestamp.toDate()).toLocaleString();
-            }
-
-            postElement.innerHTML = `
-                <h3>${post.title}</h3>
-                <p>${post.content}</p>
-                <small>작성자: ${post.author} | ${postTime}</small>
-            `;
-
-            postsContainer.appendChild(postElement);
+        let postTime = "시간 정보 없음";
+        if (post.timestamp?.toDate) {  
+            postTime = new Date(post.timestamp.toDate()).toLocaleString();
         }
+
+        postElement.innerHTML = `
+            <h3>${post.title}</h3>
+            <p>${post.content}</p>
+            <small>작성자: ${post.author} | ${postTime}</small>
+        `;
+
+        postsContainer.appendChild(postElement);
     });
 });
-
-
 
 
 function addPost(title, content, author) {
