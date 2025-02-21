@@ -126,28 +126,6 @@
                 postsContainer.appendChild(postElement);
             });
         });
-    </script>    
-
-
-
-
-        // Firestore에서 게시글 가져오기
-        const postsContainer = document.getElementById("posts-container");
-
-        db.collection("posts").orderBy("timestamp", "desc").onSnapshot(snapshot => {
-            postsContainer.innerHTML = ""; // 기존 내용 지우기
-            snapshot.forEach(doc => {
-                const post = doc.data();
-                const postElement = document.createElement("div");
-                postElement.classList.add("post");
-                postElement.innerHTML = `
-                    <h3>${post.title}</h3>
-                    <p>${post.content}</p>
-                    <small>작성자: ${post.author} | ${new Date(post.timestamp.toDate()).toLocaleString()}</small>
-                `;
-                postsContainer.appendChild(postElement);
-            });
-        });
     </script>
 </body>
 </html>
