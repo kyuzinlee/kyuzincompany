@@ -72,19 +72,19 @@ const postsQuery = query(collection(db, "posts"), orderBy("timestamp", "desc"));
 onSnapshot(postsQuery, (snapshot) => {
     postsContainer.innerHTML = ""; // 기존 내용 지우기 (중복 방지)
     
-    if (snapshot.size === 0) {  // ✅ Firestore의 snapshot.empty 대신 size 사용
+    if (snapshot.empty || snapshot.docs.length === 0) {  // ✅ Firestore의 snapshot.empty 체크
         postsContainer.innerHTML = "<p>등록된 게시글이 없습니다.</p>";
         return;
     }
 
-    snapshot.forEach((doc) => {
+    snapshot.docs.forEach((doc) => {
         const post = doc.data();
         const postElement = document.createElement("div");
         postElement.classList.add("post");
 
         // timestamp 필드 확인 후 처리
         let postTime = "시간 정보 없음";
-        if (post.timestamp && post.timestamp.toDate) {
+        if (post.timestamp?.toDate) {  // ✅ 옵셔널 체이닝 적용 (에러 방지)
             postTime = new Date(post.timestamp.toDate()).toLocaleString();
         }
 
@@ -97,6 +97,7 @@ onSnapshot(postsQuery, (snapshot) => {
         postsContainer.appendChild(postElement);
     });
 });
+
 
 
 function addPost(title, content, author) {
