@@ -87,9 +87,46 @@
     </div>
 
     <!-- Firebase SDK 추가 -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyDF45mwwX5ohDpUCSmQL59ZMF9X9dIV0OU",
+            authDomain: "qnaboard-d1c16.firebaseapp.com",
+            projectId: "qnaboard-d1c16",
+            storageBucket: "qnaboard-d1c16.appspot.com",
+            messagingSenderId: "400425836323",
+            appId: "1:400425836323:web:f9c9c11832e1447cc03696"
+        };
+    
+        // Firebase 초기화
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+    
+        // Firestore에서 게시글 가져오기
+        const postsContainer = document.getElementById("posts-container");
+    
+        const postsQuery = query(collection(db, "posts"), orderBy("timestamp", "desc"));
+    
+        onSnapshot(postsQuery, (snapshot) => {
+            postsContainer.innerHTML = ""; // 기존 내용 지우기
+            snapshot.forEach((doc) => {
+                const post = doc.data();
+                const postElement = document.createElement("div");
+                postElement.classList.add("post");
+                postElement.innerHTML = `
+                    <h3>${post.title}</h3>
+                    <p>${post.content}</p>
+                    <small>작성자: ${post.author} | ${new Date(post.timestamp.toDate()).toLocaleString()}</small>
+                `;
+                postsContainer.appendChild(postElement);
+            });
+        });
+    </script>    
 
     <script>
         // Firebase 설정
