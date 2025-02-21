@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>문의하기</title>
+    <title>문의 게시판</title>
     <style>
         body {
             text-align: center;
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
         }
-
         h1 {
             color: blue;
         }
-
         /* 게시글 스타일 */
         #posts-container {
             width: 50%;
@@ -23,7 +20,6 @@
             margin-top: 20px;
             text-align: left;
         }
-
         .post {
             background: white;
             padding: 15px;
@@ -31,28 +27,21 @@
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 10px;
         }
-
         .post h3 {
             margin: 0;
-            color: black;
+            font-weight: bold;
         }
-
         .post p {
             margin: 5px 0;
         }
-
         .post small {
             color: gray;
         }
     </style>
 </head>
-
 <body>
     <h1>문의하기</h1>
-
-    <!-- 게시판 리스트 -->
     <h2>문의 게시판</h2>
-    
     <div id="posts-container">
         <p>불러오는 중...</p>
     </div>
@@ -61,8 +50,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    
+
         // Firebase 설정
         const firebaseConfig = {
             apiKey: "AIzaSyDF45mwwX5ohDpUCSmQL59ZMF9X9dIV0OU",
@@ -72,30 +60,15 @@
             messagingSenderId: "400425836323",
             appId: "1:400425836323:web:f9c9c11832e1447cc03696"
         };
-    
+
         // Firebase 초기화
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const auth = getAuth(app);
-    
-        // 게시글 추가 함수 (Firestore 초기화 이후에 실행)
-        function addPost(title, content, author) {
-            addDoc(collection(db, "posts"), {
-                title: title,
-                content: content,
-                author: author,
-                timestamp: serverTimestamp() // 🔥 서버 타임스탬프 적용
-            }).then(() => {
-                console.log("게시글이 성공적으로 추가되었습니다!");
-            }).catch((error) => {
-                console.error("게시글 추가 중 오류 발생:", error);
-            });
-        }
-    
+
         // Firestore에서 게시글 가져오기
         const postsContainer = document.getElementById("posts-container");
         const postsQuery = query(collection(db, "posts"), orderBy("timestamp", "desc"));
-    
+
         onSnapshot(postsQuery, (snapshot) => {
             postsContainer.innerHTML = ""; // 기존 내용 지우기
             if (snapshot.empty) {
@@ -106,13 +79,13 @@
                 const post = doc.data();
                 const postElement = document.createElement("div");
                 postElement.classList.add("post");
-    
+
                 // timestamp 필드 확인 후 처리
                 let postTime = "시간 정보 없음";
                 if (post.timestamp && post.timestamp.toDate) {
                     postTime = new Date(post.timestamp.toDate()).toLocaleString();
                 }
-    
+
                 postElement.innerHTML = `
                     <h3>${post.title}</h3>
                     <p>${post.content}</p>
@@ -121,12 +94,25 @@
                 postsContainer.appendChild(postElement);
             });
         });
-    
 
-    </script>
-    
+        /*
+        // ✅ 테스트용: 게시글 추가 함수 (직접 호출 가능)
+        function addPost(title, content, author) {
+            addDoc(collection(db, "posts"), {
+                title: title,
+                content: content,
+                author: author,
+                timestamp: serverTimestamp()
+            }).then(() => {
+                console.log("게시글이 성공적으로 추가되었습니다!");
+            }).catch((error) => {
+                console.error("게시글 추가 중 오류 발생:", error);
+            });
+        }
 
+        // 🔥 필요할 경우 콘솔에서 아래 명령어 실행해서 게시글 추가 가능
+        // addPost("새로운 문의", "이곳에 새로운 문의 내용을 입력하세요.", "유저1");
+        */
     </script>
 </body>
-
 </html>
