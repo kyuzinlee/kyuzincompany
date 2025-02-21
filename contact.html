@@ -53,19 +53,27 @@
     <!-- 게시판 리스트 -->
     <h2>문의 게시판</h2>
     <script>
-        // 게시글 추가 함수
-        function addPost(title, content, author) {
-            db.collection("posts").add({
-                title: title,
-                content: content,
-                author: author,
-                timestamp: new Date() // 🔥 서버 타임스탬프 적용
-            }).then(() => {
-                console.log("게시글이 성공적으로 추가되었습니다!");
-            }).catch((error) => {
-                console.error("게시글 추가 중 오류 발생:", error);
-            });
-        }
+        // Firestore 초기화 후 실행해야 Firestore 인스턴스가 정상적으로 로드됨
+        document.addEventListener("DOMContentLoaded", function () {
+            // 게시글 추가 함수
+            function addPost(title, content, author) {
+                db.collection("posts").add({
+                    title: title,
+                    content: content,
+                    author: author,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp() // ✅ 올바른 타임스탬프 적용
+                }).then(() => {
+                    console.log("게시글이 성공적으로 추가되었습니다!");
+                }).catch((error) => {
+                    console.error("게시글 추가 중 오류 발생:", error);
+                });
+            }
+    
+            // 예제: 게시글 추가 (직접 함수 호출해볼 수 있음)
+            addPost("첫 번째 문의", "이곳에 문의 내용을 입력하세요.", "관리자");
+        });
+    </script>
+    
     
         // 예제: 게시글 추가 (직접 함수 호출해볼 수 있음)
         addPost("첫 번째 문의", "이곳에 문의 내용을 입력하세요.", "관리자");
