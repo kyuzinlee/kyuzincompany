@@ -89,6 +89,7 @@
     <!-- Firebase SDK 추가 -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
 
     <script>
         // Firebase 설정
@@ -101,9 +102,11 @@
             appId: "1:400425836323:web:f9c9c11832e1447cc03696"
         };
 
-        // Firebase 초기화
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+// Firebase 초기화
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+
 
         // Firestore에서 게시글 가져오기
         const postsContainer = document.getElementById("posts-container");
