@@ -43,15 +43,85 @@
         button:hover {
             background-color: darkblue;
         }
+        /* 게시글 스타일 */
+        #posts-container {
+            width: 50%;
+            margin: auto;
+            margin-top: 20px;
+            text-align: left;
+        }
+        .post {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+        .post h3 {
+            margin: 0;
+            color: black;
+        }
+        .post p {
+            margin: 5px 0;
+        }
+        .post small {
+            color: gray;
+        }
     </style>
 </head>
 <body>
     <h1>문의하기</h1>
+
+    <!-- 문의글 작성 폼 -->
     <form>
         <input type="text" placeholder="이름" required>
         <input type="email" placeholder="이메일" required>
         <textarea placeholder="문의 내용을 입력하세요." rows="5" required></textarea>
         <button type="submit">문의 보내기</button>
     </form>
+
+    <!-- 게시판 리스트 -->
+    <h2>문의 게시판</h2>
+    <div id="posts-container">
+        <p>불러오는 중...</p>
+    </div>
+
+    <!-- Firebase SDK 추가 -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+
+    <script>
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyDF45mwxX5ohDpUCSmQL59ZMF9X9dIV0OU",
+            authDomain: "qnaboard-d1c16.firebaseapp.com",
+            projectId: "qnaboard-d1c16",
+            storageBucket: "qnaboard-d1c16.appspot.com",
+            messagingSenderId: "400425836323",
+            appId: "1:400425836323:web:f9c9c11832e1447cc03696"
+        };
+
+        // Firebase 초기화
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Firestore에서 게시글 가져오기
+        const postsContainer = document.getElementById("posts-container");
+
+        db.collection("posts").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+            postsContainer.innerHTML = ""; // 기존 내용 지우기
+            snapshot.forEach(doc => {
+                const post = doc.data();
+                const postElement = document.createElement("div");
+                postElement.classList.add("post");
+                postElement.innerHTML = `
+                    <h3>${post.title}</h3>
+                    <p>${post.content}</p>
+                    <small>작성자: ${post.author} | ${new Date(post.timestamp.toDate()).toLocaleString()}</small>
+                `;
+                postsContainer.appendChild(postElement);
+            });
+        });
+    </script>
 </body>
 </html>
