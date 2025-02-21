@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,9 +11,11 @@
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
         }
+
         h1 {
             color: blue;
         }
+
         form {
             display: flex;
             flex-direction: column;
@@ -24,7 +27,9 @@
             width: 50%;
             margin: auto;
         }
-        input, textarea {
+
+        input,
+        textarea {
             width: 90%;
             margin-bottom: 10px;
             padding: 8px;
@@ -32,6 +37,7 @@
             border-radius: 4px;
             font-size: 16px;
         }
+
         button {
             background-color: blue;
             color: white;
@@ -40,9 +46,11 @@
             cursor: pointer;
             font-size: 16px;
         }
+
         button:hover {
             background-color: darkblue;
         }
+
         /* 게시글 스타일 */
         #posts-container {
             width: 50%;
@@ -50,6 +58,7 @@
             margin-top: 20px;
             text-align: left;
         }
+
         .post {
             background: white;
             padding: 15px;
@@ -57,18 +66,22 @@
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 10px;
         }
+
         .post h3 {
             margin: 0;
             color: black;
         }
+
         .post p {
             margin: 5px 0;
         }
+
         .post small {
             color: gray;
         }
     </style>
 </head>
+
 <body>
     <h1>문의하기</h1>
 
@@ -91,7 +104,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    
+
         // Firebase 설정
         const firebaseConfig = {
             apiKey: "AIzaSyDF45mwwX5ohDpUCSmQL59ZMF9X9dIV0OU",
@@ -101,17 +114,17 @@
             messagingSenderId: "400425836323",
             appId: "1:400425836323:web:f9c9c11832e1447cc03696"
         };
-    
+
         // Firebase 초기화
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-    
+
         // Firestore에서 게시글 가져오기
         const postsContainer = document.getElementById("posts-container");
-    
+
         const postsQuery = query(collection(db, "posts"), orderBy("timestamp", "desc"));
-    
+
         onSnapshot(postsQuery, (snapshot) => {
             postsContainer.innerHTML = ""; // 기존 내용 지우기
             snapshot.forEach((doc) => {
@@ -126,6 +139,8 @@
                 postsContainer.appendChild(postElement);
             });
         });
+
     </script>
 </body>
+
 </html>
