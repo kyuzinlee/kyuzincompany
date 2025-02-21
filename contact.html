@@ -120,25 +120,28 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // Firestore에서 게시글 가져오기
-        const postsContainer = document.getElementById("posts-container");
+// Firestore에서 게시글 가져오기
+onSnapshot(postsQuery, (snapshot) => {
+    postsContainer.innerHTML = ""; // 기존 내용 지우기
+    snapshot.forEach((doc) => {
+        const post = doc.data();
+        const postElement = document.createElement("div");
+        postElement.classList.add("post");
 
-        const postsQuery = query(collection(db, "posts"), orderBy("timestamp", "desc"));
+        // timestamp가 존재하는지 확인 후 변환
+        let postTime = "시간 정보 없음";
+        if (post.timestamp && post.timestamp.toDate) {
+            postTime = new Date(post.timestamp.toDate()).toLocaleString();
+        }
 
-        onSnapshot(postsQuery, (snapshot) => {
-            postsContainer.innerHTML = ""; // 기존 내용 지우기
-            snapshot.forEach((doc) => {
-                const post = doc.data();
-                const postElement = document.createElement("div");
-                postElement.classList.add("post");
-                postElement.innerHTML = `
-                    <h3>${post.title}</h3>
-                    <p>${post.content}</p>
-                    <small>작성자: ${post.author} | ${new Date(post.timestamp.toDate()).toLocaleString()}</small>
-                `;
-                postsContainer.appendChild(postElement);
-            });
-        });
+        postElement.innerHTML = `
+            <h3>${post.title}</h3>
+            <p>${post.content}</p>
+            <small>작성자: ${post.author} | ${postTime}</small>
+        `;
+        postsContainer.appendChild(postElement);
+    });
+});
 
     </script>
 </body>
