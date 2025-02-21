@@ -126,37 +126,6 @@
     </script>
     
 
-        // Firestore에서 게시글 가져오기
-        const postsContainer = document.getElementById("posts-container");
-
-        // ✅ 🔥 postsQuery 정의 추가 (이전 코드에서 빠져있었음)
-        const postsQuery = query(collection(db, "posts"), orderBy("timestamp", "desc"));
-
-        onSnapshot(postsQuery, (snapshot) => {
-            postsContainer.innerHTML = ""; // 기존 내용 지우기
-            if (snapshot.empty) {
-                postsContainer.innerHTML = "<p>등록된 게시글이 없습니다.</p>";
-                return;
-            }
-            snapshot.forEach((doc) => {
-                const post = doc.data();
-                const postElement = document.createElement("div");
-                postElement.classList.add("post");
-
-                // timestamp 필드 확인 후 처리
-                let postTime = "시간 정보 없음";
-                if (post.timestamp && post.timestamp.toDate) {
-                    postTime = new Date(post.timestamp.toDate()).toLocaleString();
-                }
-
-                postElement.innerHTML = `
-                    <h3>${post.title}</h3>
-                    <p>${post.content}</p>
-                    <small>작성자: ${post.author} | ${postTime}</small>
-                `;
-                postsContainer.appendChild(postElement);
-            });
-        });
     </script>
 </body>
 
