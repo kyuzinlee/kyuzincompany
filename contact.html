@@ -65,54 +65,55 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Firestore에서 게시글 가져오기
-        const postsContainer = document.getElementById("posts-container");
-        const postsQuery = query(collection(db, "posts"), orderBy("timestamp", "desc"));
+// Firestore에서 게시글 가져오기
+const postsContainer = document.getElementById("posts-container");
+const postsQuery = query(collection(db, "posts"), orderBy("timestamp", "desc"));
 
-        onSnapshot(postsQuery, (snapshot) => {
-            postsContainer.innerHTML = ""; // 기존 내용 지우기
-            if (snapshot.empty) {
-                postsContainer.innerHTML = "<p>등록된 게시글이 없습니다.</p>";
-                return;
-            }
-            snapshot.forEach((doc) => {
-                const post = doc.data();
-                const postElement = document.createElement("div");
-                postElement.classList.add("post");
+onSnapshot(postsQuery, (snapshot) => {
+    postsContainer.innerHTML = ""; // 기존 내용 지우기 (중복 방지)
+    
+    if (snapshot.size === 0) {  // ✅ Firestore의 snapshot.empty 대신 size 사용
+        postsContainer.innerHTML = "<p>등록된 게시글이 없습니다.</p>";
+        return;
+    }
 
-                // timestamp 필드 확인 후 처리
-                let postTime = "시간 정보 없음";
-                if (post.timestamp && post.timestamp.toDate) {
-                    postTime = new Date(post.timestamp.toDate()).toLocaleString();
-                }
+    snapshot.forEach((doc) => {
+        const post = doc.data();
+        const postElement = document.createElement("div");
+        postElement.classList.add("post");
 
-                postElement.innerHTML = `
-                    <h3>${post.title}</h3>
-                    <p>${post.content}</p>
-                    <small>작성자: ${post.author} | ${postTime}</small>
-                `;
-                postsContainer.appendChild(postElement);
-            });
-        });
-
-        /*
-        // ✅ 테스트용: 게시글 추가 함수 (직접 호출 가능)
-        function addPost(title, content, author) {
-            addDoc(collection(db, "posts"), {
-                title: title,
-                content: content,
-                author: author,
-                timestamp: serverTimestamp()
-            }).then(() => {
-                console.log("게시글이 성공적으로 추가되었습니다!");
-            }).catch((error) => {
-                console.error("게시글 추가 중 오류 발생:", error);
-            });
+        // timestamp 필드 확인 후 처리
+        let postTime = "시간 정보 없음";
+        if (post.timestamp && post.timestamp.toDate) {
+            postTime = new Date(post.timestamp.toDate()).toLocaleString();
         }
 
-        // 🔥 필요할 경우 콘솔에서 아래 명령어 실행해서 게시글 추가 가능
-        // addPost("새로운 문의", "이곳에 새로운 문의 내용을 입력하세요.", "유저1");
-        */
+        postElement.innerHTML = `
+            <h3>${post.title}</h3>
+            <p>${post.content}</p>
+            <small>작성자: ${post.author} | ${postTime}</small>
+        `;
+
+        postsContainer.appendChild(postElement);
+    });
+});
+
+
+function addPost(title, content, author) {
+    addDoc(collection(db, "posts"), {
+        title: title,
+        content: content,
+        author: author,
+        timestamp: serverTimestamp()
+    }).then(() => {
+        console.log("게시글이 성공적으로 추가되었습니다!");
+    }).catch((error) => {
+        console.error("게시글 추가 중 오류 발생:", error);
+    });
+}
+
+// 🔥 필요할 경우 콘솔에서 아래 명령어 실행해서 게시글 추가 가능
+// 예제: addPost("새로운 문의", "이곳에 새로운 문의 내용을 입력하세요.", "유저1");
     </script>
 </body>
 </html>
