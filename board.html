@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시판 목록</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
-        }
+    body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+    padding-top: 60px; /* 네비게이션 바 높이만큼 여백 추가 */
+}
         table {
             width: 80%;
             margin: auto;
@@ -35,7 +36,13 @@
     </style>
 </head>
 <body>
+    <nav style="background-color: #333; padding: 10px; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;">
+        <a href="index.html" style="color: white; margin: 10px;">홈</a>
+        <a href="board.html" style="color: white; margin: 10px;">문의 게시판</a>
+    </nav>
+
     <h1>자유게시판</h1>
+
     <button class="write-btn" onclick="location.href='write.html'">글쓰기</button>
     <table>
         <tr>
