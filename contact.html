@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문의 게시판</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: blue;
+        }
+        /* 게시글 스타일 */
+        #posts-container {
+            width: 50%;
+            margin: auto;
+            margin-top: 20px;
+            text-align: left;
+        }
+        .post {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+        .post h3 {
+            margin: 0;
+            font-weight: bold;
+        }
+        .post p {
+            margin: 5px 0;
+        }
+        .post small {
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+    <h1>문의하기</h1>
+    <h2>문의 게시판</h2>
+    <div id="posts-container">
+        <p>불러오는 중...</p>
+    </div>
+
+    <!-- Firebase SDK 추가 -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyDF45mwwX5ohDpUCSmQL59ZMF9X9dIV0OU",
+            authDomain: "qnaboard-d1c16.firebaseapp.com",
+            projectId: "qnaboard-d1c16",
+            storageBucket: "qnaboard-d1c16.appspot.com",
+            messagingSenderId: "400425836323",
+            appId: "1:400425836323:web:f9c9c11832e1447cc03696"
+        };
+
+        // Firebase 초기화
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+// Firestore에서 게시글 가져오기
+const postsContainer = document.getElementById("posts-container");
+const postsQuery = query(collection(db, "posts"), orderBy("timestamp", "desc"));
+
+// ✅ 중복 추가 방지: 기존에 렌더링된 게시글 목록 추적
+let renderedPostIds = new Set();
+
+onSnapshot(postsQuery, (snapshot) => {
+    postsContainer.innerHTML = ""; // 기존 내용 초기화 (중복 방지)
+
+    if (snapshot.empty || snapshot.docs.length === 0) {  
+        postsContainer.innerHTML = "<p>등록된 게시글이 없습니다.</p>";
+        return;
+    }
+
+    snapshot.docs.forEach((doc) => {
+        const post = doc.data();
+        const postElement = document.createElement("div");
+        postElement.classList.add("post");
+
+        let postTime = "시간 정보 없음";
+        if (post.timestamp?.toDate) {  
+            postTime = new Date(post.timestamp.toDate()).toLocaleString();
+        }
+
+        postElement.innerHTML = `
+            <h3>${post.title}</h3>
+            <p>${post.content}</p>
+            <small>작성자: ${post.author} | ${postTime}</small>
+        `;
+
+        postsContainer.appendChild(postElement);
+    });
+});
+
+
+function addPost(title, content, author) {
+    addDoc(collection(db, "posts"), {
+        title: title,
+        content: content,
+        author: author,
+        timestamp: serverTimestamp()
+    }).then(() => {
+        console.log("게시글이 성공적으로 추가되었습니다!");
+    }).catch((error) => {
+        console.error("게시글 추가 중 오류 발생:", error);
+    });
+}
+
+// 🔥 필요할 경우 콘솔에서 아래 명령어 실행해서 게시글 추가 가능
+// 예제: addPost("새로운 문의", "이곳에 새로운 문의 내용을 입력하세요.", "유저1");
+    </script>
+</body>
+</html>
