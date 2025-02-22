@@ -32,24 +32,46 @@
     <textarea id="content" placeholder="내용 입력"></textarea>
     <button class="submit-btn" onclick="writePost()">등록</button>
 
+    <!-- ✅ Firebase SDK 최상단 import -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { /* YOUR FIREBASE CONFIG */ };
+        // ✅ Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyDF45mwwX5ohDpUCSmQL59ZMF9X9dIV0OU",
+            authDomain: "qnaboard-d1c16.firebaseapp.com",
+            projectId: "qnaboard-d1c16",
+            storageBucket: "qnaboard-d1c16.appspot.com",
+            messagingSenderId: "400425836323",
+            appId: "1:400425836323:web:f9c9c11832e1447cc03696"
+        };
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        async function writePost() {
+        // ✅ 전역 함수로 등록
+        window.writePost = async function() {
+            const title = document.getElementById("title").value.trim();
+            const author = document.getElementById("author").value.trim();
+            const content = document.getElementById("content").value.trim();
+
+            if (!title || !author || !content) {
+                alert("모든 필드를 입력하세요!");
+                return;
+            }
+
             await addDoc(collection(db, "posts"), {
-                title: document.getElementById("title").value,
-                author: document.getElementById("author").value,
-                content: document.getElementById("content").value,
+                title: title,
+                author: author,
+                content: content,
                 timestamp: serverTimestamp()
             });
+
             alert("게시글이 등록되었습니다!");
             window.location.href = "board.html";
-        }
+        };
     </script>
+
 </body>
 </html>
