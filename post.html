@@ -57,10 +57,24 @@
         const postContainer = document.getElementById("post-container");
 
         if (!postId) {
-            postContainer.innerHTML = "<p>잘못된 접근입니다.</p>";
-        } else {
-            loadPost(postId);
+    postContainer.innerHTML = "<p>잘못된 접근입니다.</p>";
+} else {
+    loadPost(postId);
+}
+
+// ✅ 삭제 기능 추가
+import { deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+document.addEventListener("click", async (event) => {
+    if (event.target.id === "delete-btn") {
+        const confirmDelete = confirm("정말로 삭제하시겠습니까?");
+        if (confirmDelete) {
+            await deleteDoc(doc(db, "posts", postId));
+            alert("게시글이 삭제되었습니다.");
+            window.location.href = "board.html";
         }
+    }
+});
 
         async function loadPost(id) {
             const docRef = doc(db, "posts", id);
@@ -71,11 +85,15 @@
                 const postTime = post.timestamp?.toDate().toLocaleString() || "시간 정보 없음";
 
                 postContainer.innerHTML = `
-                    <h2>${post.title}</h2>
-                    <p class="info">작성자: ${post.author} | 작성일: ${postTime}</p>
-                    <hr>
-                    <p>${post.content}</p>
-                `;
+    <h2>${post.title}</h2>
+    <p class="info">작성자: ${post.author} | 작성일: ${postTime}</p>
+    <hr>
+    <p>${post.content}</p>
+    <button id="delete-btn" style="background-color: red; color: white; padding: 10px; border: none; cursor: pointer; margin-top: 20px;">
+        삭제하기
+    </button>
+`;
+
             } else {
                 postContainer.innerHTML = "<p>게시글을 찾을 수 없습니다.</p>";
             }
