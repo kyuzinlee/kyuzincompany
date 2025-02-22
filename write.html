@@ -29,8 +29,9 @@
     <h1>게시글 작성</h1>
     <input type="text" id="title" placeholder="제목 입력">
     <input type="text" id="author" placeholder="작성자 입력">
+    <input type="password" id="password" placeholder="비밀번호 입력"> <!-- ✅ 비밀번호 입력 추가 -->
     <textarea id="content" placeholder="내용 입력"></textarea>
-    <button class="submit-btn" onclick="writePost()">등록</button>
+    <button class="submit-btn" onclick="writePost()">등록</button>    
 
     <!-- ✅ Firebase SDK 최상단 import -->
     <script type="module">
@@ -52,25 +53,34 @@
 
         // ✅ 전역 함수로 등록
         window.writePost = async function() {
-            const title = document.getElementById("title").value.trim();
-            const author = document.getElementById("author").value.trim();
-            const content = document.getElementById("content").value.trim();
+    const title = document.getElementById("title").value.trim();
+    const author = document.getElementById("author").value.trim();
+    const password = document.getElementById("password").value.trim(); // ✅ 비밀번호 추가
+    const content = document.getElementById("content").value.trim();
 
-            if (!title || !author || !content) {
-                alert("모든 필드를 입력하세요!");
-                return;
-            }
+    if (!title || !author || !content || !password) {
+        alert("모든 필드를 입력하세요!");
+        return;
+    }
 
-            await addDoc(collection(db, "posts"), {
-                title: title,
-                author: author,
-                content: content,
-                timestamp: serverTimestamp()
-            });
+    // ✅ 비밀번호 숫자 4자리만 허용
+    if (!/^\d{4}$/.test(password)) {
+        alert("비밀번호는 숫자 4자리만 입력 가능합니다!");
+        return;
+    }
 
-            alert("게시글이 등록되었습니다!");
-            window.location.href = "board.html";
-        };
+    await addDoc(collection(db, "posts"), {
+        title: title,
+        author: author,
+        password: password, // ✅ 비밀번호 저장
+        content: content,
+        timestamp: serverTimestamp()
+    });
+
+    alert("게시글이 등록되었습니다!");
+    window.location.href = "board.html";
+};
+
     </script>
 
 </body>
