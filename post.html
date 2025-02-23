@@ -6,11 +6,11 @@
     <title>게시글 보기</title>
     <style>
         body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #f4f4f4;
-    padding-top: 60px; /* 네비게이션 바 높이만큼 여백 추가 */
-}
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding-top: 60px;
+        }
         .post-container {
             width: 60%;
             margin: auto;
@@ -30,7 +30,6 @@
     </style>
 </head>
 <body>
-    <!-- ✅ 네비게이션 바 추가 -->
     <nav style="background-color: #333; padding: 10px; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;">
         <a href="index.html" style="color: white; margin: 10px;">홈</a>
         <a href="board.html" style="color: white; margin: 10px;">문의 게시판</a>
@@ -38,21 +37,19 @@
 
     <style>
         body {
-            padding-top: 60px; /* 네비게이션 바 높이만큼 여백 추가 */
+            padding-top: 60px;
         }
     </style>
 
     <h1>게시글 상세보기</h1>
-    <!-- ✅ 올바른 post-container (게시글 내용) -->
     <div id="post-container" class="post-container">
         <p>불러오는 중...</p>
     </div>
 
-
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 
         const firebaseConfig = {
             apiKey: "AIzaSyDF45mwwX5ohDpUCSmQL59ZMF9X9dIV0OU",
@@ -66,70 +63,161 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // URL에서 게시글 ID 가져오기
         const params = new URLSearchParams(window.location.search);
         const postId = params.get("id");
 
         const postContainer = document.getElementById("post-container");
 
         if (!postId) {
-    postContainer.innerHTML = "<p>잘못된 접근입니다.</p>";
-} else {
-    loadPost(postId);
-}
-
-// ✅ 삭제 기능 추가
-import { deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-async function loadPost(id) {
-    const docRef = doc(db, "posts", id);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-        const post = docSnap.data();
-        const postTime = post.timestamp?.toDate().toLocaleString() || "시간 정보 없음";
-
-        // ✅ "불러오는 중..."을 대체하면서 UI 정상화
-        postContainer.innerHTML = `
-            <div style="position: relative;">
-                <h2>${post.title}</h2>
-                <p class="info">작성자: ${post.author} | 작성일: ${postTime}</p>
-                <hr>
-                <p>${post.content}</p>
-                <button id="delete-btn" style="display:block; background:red; color:white; padding:6px 12px; border:none;
-                        cursor:pointer; font-size:14px; border-radius:5px; position: absolute; top: 10px; right: 10px;">
-                    삭제
-                </button>
-            </div>
-        `;
-
-        document.getElementById("delete-btn").onclick = () => deletePost(id, post.password);
-    } else {
-        postContainer.innerHTML = "<p>게시글을 찾을 수 없습니다.</p>";
-    }
-}
-
-
-
-// ✅ 게시글 삭제 기능
-async function deletePost(id, correctPassword) {
-    const userPassword = prompt("게시글 삭제를 위해 비밀번호를 입력하세요:");
-
-    if (!userPassword) return; // 취소 버튼 눌렀을 때 중단
-
-    // ✅ 비밀번호 검증 후 삭제 가능
-    if (userPassword === correctPassword) {
-        if (confirm("정말로 이 게시글을 삭제하시겠습니까?")) {
-            await deleteDoc(doc(db, "posts", id));
-            alert("게시글이 삭제되었습니다.");
-            window.location.href = "board.html"; // ✅ 게시판 목록으로 이동
+            postContainer.innerHTML = "<p>잘못된 접근입니다.</p>";
+        } else {
+            loadPost(postId);
         }
-    } else {
-        alert("비밀번호가 일치하지 않습니다! 삭제할 수 없습니다.");
+
+        async function loadPost(id) {
+            const docRef = doc(db, "posts", id);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const post = docSnap.data();
+                const postTime = post.timestamp?.toDate().toLocaleString() || "시간 정보 없음";
+
+                postContainer.innerHTML = `
+                    <div style="position: relative;">
+                        <h2 id="post-title">${post.title}</h2>
+                        <p class="info">작성자: ${post.author} | 작성일: ${postTime}</p>
+                        <hr>
+                        <p id="post-content">${post.content}</p>
+
+                        
+
+<!-- ✅ 댓글 입력 폼 추가 -->
+<h3>댓글</h3>
+<input type="text" id="comment-author" placeholder="작성자 입력" style="width: 15%; padding: 5px;">
+<input type="password" id="comment-password" placeholder="비밀번호 입력" style="width: 15%; padding: 5px;">
+<textarea id="comment-content" placeholder="댓글을 입력하세요" style="width: 100%; height: 60px; padding: 5px;"></textarea>
+<button id="add-comment-btn" style="background: green; color: white; padding: 6px 12px; border: none; cursor: pointer; font-size: 14px; border-radius: 5px;">
+    댓글 등록
+</button>
+
+<!-- ✅ 댓글 목록 -->
+<div id="comments-container" style="margin-top: 20px;">
+    <p>댓글을 불러오는 중...</p>
+</div>
+
+<button id="edit-btn" style="display:block; background:green; color:white; padding:6px 12px; border:none;
+    cursor:pointer; font-size:14px; border-radius:5px; position: absolute; top: 45px; right: 55px; margin-right: 1%;">
+    수정
+</button>
+
+<button id="delete-btn" style="display:block; background:red; color:white; padding:6px 12px; border:none;
+    cursor:pointer; font-size:14px; border-radius:5px; position: absolute; top: 45px; right: 10px;">
+    삭제
+</button>
+
+
+                       <button id="save-btn" style="display:none; background:blue; color:white; padding:6px 12px; border:none;
+cursor:pointer; font-size:14px; border-radius:5px; position: absolute; top: 45px; right: 00px;">
+저장
+</button>
+
+                    </div>
+                `;
+
+                document.getElementById("delete-btn").onclick = () => deletePost(id, post.password);
+                document.getElementById("edit-btn").onclick = () => editPost(id, post.password);
+                document.getElementById("add-comment-btn").onclick = () => addComment(id);
+
+async function addComment(postId) {
+    const author = document.getElementById("comment-author").value.trim();
+    const password = document.getElementById("comment-password").value.trim();
+    const content = document.getElementById("comment-content").value.trim();
+
+    if (!author || !password || !content) {
+        alert("모든 필드를 입력하세요.");
+        return;
     }
+
+    await addDoc(collection(db, "comments"), {
+        postId: postId,
+        author: author,
+        password: password,
+        content: content,
+        timestamp: new Date()
+    });
+
+    alert("댓글이 등록되었습니다.");
+    loadComments(postId);
 }
 
+            } else {
+                postContainer.innerHTML = "<p>게시글을 찾을 수 없습니다.</p>";
+            }
+        }
 
+        function editPost(id, correctPassword) {
+            const userPassword = prompt("게시글 수정을 위해 비밀번호를 입력하세요:");
+
+            if (userPassword !== correctPassword) {
+                alert("비밀번호가 일치하지 않습니다!");
+                return;
+            }
+
+            document.getElementById("edit-btn").style.display = "none";
+            document.getElementById("delete-btn").style.display = "none";
+            document.getElementById("save-btn").style.display = "inline-block";
+
+            const titleElement = document.getElementById("post-title");
+            const contentElement = document.getElementById("post-content");
+
+            titleElement.outerHTML = `<input type="text" id="edit-title" value="${titleElement.innerText}" 
+                style="width: 100%; padding: 5px; font-size: 18px; font-weight: bold;">`;
+
+            contentElement.outerHTML = `<textarea id="edit-content" style="width: 100%; height: 150px; padding: 5px;">${contentElement.innerText}</textarea>`;
+
+            document.getElementById("save-btn").onclick = () => savePost(id);
+        }
+
+        async function savePost(id) {
+            const newTitle = document.getElementById("edit-title").value.trim();
+            const newContent = document.getElementById("edit-content").value.trim();
+
+            if (!newTitle || !newContent) {
+                alert("제목과 내용을 모두 입력하세요.");
+                return;
+            }
+
+            const docRef = doc(db, "posts", id);
+
+            try {
+                await updateDoc(docRef, {
+                    title: newTitle,
+                    content: newContent,
+                });
+
+                alert("게시글이 성공적으로 수정되었습니다.");
+                location.reload();
+            } catch (error) {
+                console.error("게시글 수정 오류:", error);
+                alert("게시글 수정 중 오류가 발생했습니다.");
+            }
+        }
+
+        async function deletePost(id, correctPassword) {
+            const userPassword = prompt("게시글 삭제를 위해 비밀번호를 입력하세요:");
+
+            if (!userPassword) return;
+
+            if (userPassword === correctPassword) {
+                if (confirm("정말로 이 게시글을 삭제하시겠습니까?")) {
+                    await deleteDoc(doc(db, "posts", id));
+                    alert("게시글이 삭제되었습니다.");
+                    window.location.href = "board.html";
+                }
+            } else {
+                alert("비밀번호가 일치하지 않습니다! 삭제할 수 없습니다.");
+            }
+        }
     </script>
 </body>
 </html>

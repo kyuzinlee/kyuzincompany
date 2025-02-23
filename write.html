@@ -11,12 +11,21 @@
     background-color: #f4f4f4;
     padding-top: 60px;
 }
-        input, textarea {
-            width: 50%;
-            margin: 10px;
-            padding: 10px;
-            display: block;
-        }
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+input, textarea {
+    width: 50%;
+    margin: 10px;
+    padding: 10px;
+}
+
+textarea {
+    height: 150px; /* ✅ 내용 입력 칸 크기 증가 */
+}
         .submit-btn {
             padding: 10px 20px;
             background: #007bff;
@@ -39,12 +48,14 @@
         }
     </style>
 
-    <h1>게시글 작성</h1>
+<h1>게시글 작성</h1>
+<div class="container"> <!-- ✅ 입력란을 감싸는 컨테이너 추가 -->
     <input type="text" id="title" placeholder="제목 입력">
     <input type="text" id="author" placeholder="작성자 입력">
-    <input type="password" id="password" placeholder="비밀번호 입력"> <!-- ✅ 비밀번호 입력 추가 -->
+    <input type="password" id="password" placeholder="비밀번호 입력">
     <textarea id="content" placeholder="내용 입력"></textarea>
-    <button class="submit-btn" onclick="writePost()">등록</button>  
+    <button class="submit-btn" onclick="writePost()">등록</button>
+</div> <!-- ✅ 추가 -->
 
     <!-- ✅ Firebase SDK 최상단 import -->
     <script type="module">
