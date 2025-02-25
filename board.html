@@ -26,14 +26,21 @@
             color: white;
         }
         .write-btn {
-            margin: 20px;
-            padding: 10px 20px;
-            background: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
+    position: absolute;
+    right: 139px; /* ✅ 오른쪽 여백 (수치 조절 가능) */
+    top: 135px; /* ✅ 버튼이 너무 위에 붙지 않도록 조정 */
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    }
+
+    /* ✅ 자유게시판 제목과 목록 사이 여백 조정 */
+    h1 {
+        margin-bottom: 50px; /* 숫자를 줄이면 간격이 좁아지고, 늘리면 넓어짐 */
+    }
+</style>
 </head>
 <body>
     <nav style="background-color: #333; padding: 10px; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;">
@@ -44,7 +51,15 @@
     <h1>자유게시판</h1>
 
     <button class="write-btn" onclick="location.href='write.html'">글쓰기</button>
+    
     <table>
+        <colgroup>
+            <col style="width: 7%;"> <!-- 번호 -->
+            <col style="width: 60%;"> <!-- 제목 -->
+            <col style="width: 13%;"> <!-- 작성자 -->
+            <col style="width: 13%;"> <!-- 등록일 -->
+            <col style="width: 7%;"> <!-- 조회수 -->
+        </colgroup>
         <tr>
             <th>번호</th>
             <th>제목</th>
@@ -52,6 +67,7 @@
             <th>등록일</th>
             <th>조회수</th>
         </tr>
+    
         <tbody id="post-list">
             <tr><td colspan="5">불러오는 중...</td></tr>
         </tbody>

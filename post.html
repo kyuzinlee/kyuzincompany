@@ -19,7 +19,9 @@
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             text-align: left;
+            padding-bottom: 40px; /* 숫자를 늘리면 하단 배경이 더 길어짐 */
         }
+
         h1 {
             text-align: center;
         }
@@ -27,7 +29,63 @@
             font-size: 14px;
             color: gray;
         }
+        
+        /* ✅ 글 내용과 댓글 제목 사이 간격 조정 */
+        /* ✅ 글 내용과 댓글 제목 사이 간격 조정 */
+#post-content {
+    margin-bottom: 50px; /* 숫자를 늘리면 더 넓어짐 */
+}
+
+/* ✅ 댓글 제목('댓글')과 첫 번째 댓글 사이 간격 조정 */
+h3 {
+    margin-bottom: -15px; /* 기존 100px → -20px으로 줄여서 간격 조정 */
+}
+
+/* ✅ 댓글 리스트의 위쪽 마진 줄이기 */
+#comments-container {
+    margin-top: 10px; /* 기존 20px에서 줄여서 댓글이 위로 당겨짐 */
+}
+
+    
+        .comment-container {
+            display: flex;
+            align-items: center; /* ✅ 댓글과 버튼을 같은 높이로 정렬 */
+            justify-content: space-between;
+            margin-top: px; /* ✅ 댓글과 버튼 위아래 간격 조정 */
+            padding: 1px 0; /* ✅ 댓글 간 간격을 조정하면서 버튼도 동일 적용 */
+        }
+    
+        .comment-buttons {
+    display: flex; /* ✅ 가로 정렬 유지 */
+    gap: 8px; /* ✅ 수정/삭제 버튼 간 간격 조정 */
+}
+
+.comment-buttons button {
+    cursor: pointer; /* ✅ 마우스를 올리면 손가락 모양으로 변경 */
+    background-color: #007bff; /* ✅ 기본 배경색 (파란색 - 수정 버튼) */
+    color: white; /* ✅ 글자색 */
+    border: none; /* ✅ 테두리 없애기 */
+    padding: 6px 10px; /* ✅ 버튼 내부 여백 */
+    border-radius: 5px; /* ✅ 버튼 모서리 둥글게 */
+}
+
+.comment-buttons button:nth-child(2) { 
+    background-color: #dc3545; /* ✅ 삭제 버튼은 빨간색 */
+}
+
+
+        .comment-buttons button {
+    cursor: pointer; /* ✅ 마우스를 올리면 손가락 모양으로 변경 */
+}
+
+        #add-comment-btn {
+    position: absolute;
+    right: 00px; /* 숫자를 조정하여 오른쪽으로 이동 */
+    margin-top: 0px; /* 필요하면 위아래 위치도 조정 가능 */
+}
+
     </style>
+    
 </head>
 <body>
     <nav style="background-color: #333; padding: 10px; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;">
@@ -48,7 +106,10 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc, 
+    query, where, getDocs } 
+    from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 
 
         const firebaseConfig = {
@@ -91,27 +152,28 @@ import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc } f
 
                         
 
-<!-- ✅ 댓글 입력 폼 추가 -->
+<!-- 댓글 목록 (위쪽으로 이동) -->
 <h3>댓글</h3>
-<input type="text" id="comment-author" placeholder="작성자 입력" style="width: 15%; padding: 5px;">
-<input type="password" id="comment-password" placeholder="비밀번호 입력" style="width: 15%; padding: 5px;">
-<textarea id="comment-content" placeholder="댓글을 입력하세요" style="width: 100%; height: 60px; padding: 5px;"></textarea>
-<button id="add-comment-btn" style="background: green; color: white; padding: 6px 12px; border: none; cursor: pointer; font-size: 14px; border-radius: 5px;">
-    댓글 등록
-</button>
-
-<!-- ✅ 댓글 목록 -->
 <div id="comments-container" style="margin-top: 20px;">
     <p>댓글을 불러오는 중...</p>
 </div>
 
+<!-- 댓글 입력창 (아래로 이동) -->
+<input type="text" id="comment-author" placeholder="작성자 입력" style="width: 15%; padding: 5px; margin-top: 20px;">
+<input type="password" id="comment-password" placeholder="비밀번호 입력" style="width: 15%; padding: 5px;">
+<textarea id="comment-content" placeholder="댓글을 입력하세요" style="width: 100%; height: 60px; padding: 5px; margin-top: 5px;"></textarea>
+<button id="add-comment-btn" style="background: green; color: white; padding: 6px 12px; border: none; cursor: pointer; font-size: 14px; border-radius: 5px;">
+    댓글 등록
+</button>
+
+
 <button id="edit-btn" style="display:block; background:green; color:white; padding:6px 12px; border:none;
-    cursor:pointer; font-size:14px; border-radius:5px; position: absolute; top: 45px; right: 55px; margin-right: 1%;">
+    cursor:pointer; font-size:14px; border-radius:5px; position: absolute; top: 45px; right: 50px; margin-right: 1%;">
     수정
 </button>
 
 <button id="delete-btn" style="display:block; background:red; color:white; padding:6px 12px; border:none;
-    cursor:pointer; font-size:14px; border-radius:5px; position: absolute; top: 45px; right: 10px;">
+    cursor:pointer; font-size:14px; border-radius:5px; position: absolute; top: 45px; right: 00px;">
     삭제
 </button>
 
@@ -127,6 +189,7 @@ cursor:pointer; font-size:14px; border-radius:5px; position: absolute; top: 45px
                 document.getElementById("delete-btn").onclick = () => deletePost(id, post.password);
                 document.getElementById("edit-btn").onclick = () => editPost(id, post.password);
                 document.getElementById("add-comment-btn").onclick = () => addComment(id);
+loadComments(id); // ✅ 댓글을 불러오는 함수 호출
 
 async function addComment(postId) {
     const author = document.getElementById("comment-author").value.trim();
@@ -149,6 +212,90 @@ async function addComment(postId) {
     alert("댓글이 등록되었습니다.");
     loadComments(postId);
 }
+
+async function deleteComment(commentId) {
+    const userPassword = prompt("댓글 삭제를 위해 비밀번호를 입력하세요:");
+    if (!userPassword) return;
+
+    const commentRef = doc(db, "comments", commentId);
+    const commentSnap = await getDoc(commentRef);
+
+    if (!commentSnap.exists()) {
+        alert("댓글을 찾을 수 없습니다.");
+        return;
+    }
+
+    const commentData = commentSnap.data();
+    if (commentData.password !== userPassword) {
+        alert("비밀번호가 일치하지 않습니다!");
+        return;
+    }
+
+    await deleteDoc(commentRef);
+    alert("댓글이 삭제되었습니다.");
+    loadComments(commentData.postId);
+}
+
+window.deleteComment = deleteComment;
+
+
+async function editComment(commentId) {
+    const userPassword = prompt("댓글 수정을 위해 비밀번호를 입력하세요:");
+    if (!userPassword) return;
+
+    const commentRef = doc(db, "comments", commentId);
+    const commentSnap = await getDoc(commentRef);
+
+    if (!commentSnap.exists()) {
+        alert("댓글을 찾을 수 없습니다.");
+        return;
+    }
+
+    const commentData = commentSnap.data();
+    if (commentData.password !== userPassword) {
+        alert("비밀번호가 일치하지 않습니다!");
+        return;
+    }
+
+    const newContent = prompt("새로운 댓글 내용을 입력하세요:", commentData.content);
+    if (!newContent) return;
+
+    await updateDoc(commentRef, { content: newContent });
+    alert("댓글이 수정되었습니다.");
+    loadComments(commentData.postId);
+}
+
+window.editComment = editComment;
+
+
+
+async function loadComments(postId) {
+    console.log(`🔍 loadComments 실행됨 (postId: ${postId})`);
+
+    const commentsContainer = document.getElementById("comments-container");
+    commentsContainer.innerHTML = "<p>댓글을 불러오는 중...</p>";
+
+    const commentsRef = collection(db, "comments");
+    const q = query(commentsRef, where("postId", "==", postId));
+    const querySnapshot = await getDocs(q);
+
+    let commentsHTML = "";
+    querySnapshot.forEach((commentDoc) => {
+    const comment = commentDoc.data();
+    commentsHTML += `<div class="comment-container">
+        <div>
+            <strong>💬 ${comment.author}</strong>: ${comment.content}
+        </div>
+        <div class="comment-buttons">
+            <button onclick="editComment('${commentDoc.id}')">수정</button>
+            <button onclick="deleteComment('${commentDoc.id}')">삭제</button>
+        </div>
+    </div>`;
+});
+
+    commentsContainer.innerHTML = commentsHTML || "<p>댓글이 없습니다.</p>";
+}
+
 
             } else {
                 postContainer.innerHTML = "<p>게시글을 찾을 수 없습니다.</p>";
