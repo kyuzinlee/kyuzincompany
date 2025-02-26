@@ -25,19 +25,54 @@
             background-color: darkorange;
         }
         @media (max-width: 768px) {
-    .post-container {
+    /* 입력 폼이 모바일에서도 정렬되도록 */
+    .form-container {
         width: 95%;
         padding: 15px;
     }
 
-    h1 {
-        font-size: 22px;
+    input, textarea {
+        width: 100%; /* 입력 필드 너비 조정 */
     }
 
-    nav {
-        padding: 8px;
+    button {
+        width: 100%; /* 버튼 너비 조정 */
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    /* 📌 게시판 반응형 (목록 및 버튼 정렬) */
+    body {
+        padding-top: 50px; /* 네비게이션 바 여백 조정 */
+    }
+
+    .post-container, table {
+        width: 95%; /* 모바일에서는 전체 너비에 가깝게 */
+    }
+
+    th, td {
+        padding: 8px; /* 글자가 너무 붙지 않도록 조정 */
+        font-size: 14px; /* 폰트 크기 줄이기 */
+    }
+
+    .write-btn {
+        position: static; /* 버튼을 우측 고정하지 않고 기본 흐름대로 배치 */
+        display: block;
+        width: 90%; /* 너비를 넓혀서 가운데 정렬 */
+        margin: 10px auto; /* 상하 여백 추가 및 중앙 정렬 */
+    }
+
+    /* 📌 댓글 영역 반응형 */
+    .comment-container {
+        flex-direction: column; /* 댓글과 버튼을 세로 정렬 */
+        align-items: flex-start; /* 왼쪽 정렬 */
+    }
+
+    .comment-buttons {
+        margin-top: 5px; /* 버튼과 댓글 사이 간격 */
     }
 }
+
 
     </style>
 </head>
