@@ -10,10 +10,12 @@
     text-align: center;
     background-color: #f4f4f4;
     padding-top: 60px; /* 네비게이션 바 높이만큼 여백 추가 */
+    min-width: 1200px; /* ✅ 추가 */
+    overflow-x: auto;  /* ✅ 추가 */
 }
         table {
-            width: 80%;
-            margin: auto;
+            width: 1200px; /* ✅ 테이블 고정 크기 설정 */
+            margin: auto; /* ✅ 가운데 정렬 */
             background: white;
             border-collapse: collapse;
         }
@@ -25,16 +27,25 @@
             background: #007bff;
             color: white;
         }
-        .write-btn {
-    position: absolute;
-    right: 139px; /* ✅ 오른쪽 여백 (수치 조절 가능) */
-    top: 135px; /* ✅ 버튼이 너무 위에 붙지 않도록 조정 */
+        .table-container {
+    width: 1200px; /* 📌 테이블 크기를 1200px로 고정 */
+    margin: auto;
+    position: relative;
+}
+
+.write-btn {
     padding: 10px 20px;
     background: #007bff;
     color: white;
     border: none;
     cursor: pointer;
-    }
+    text-align: center;
+    min-width: 120px;
+
+    position: absolute;
+    top: -50px; /* 📌 테이블 위쪽으로 배치 */
+    right: 0px; /* ✅ 테이블의 오른쪽 끝에 정확히 정렬 */
+}
 
     /* ✅ 자유게시판 제목과 목록 사이 여백 조정 */
     h1 {
@@ -51,28 +62,21 @@
 
     <h1>자유게시판</h1>
 
-    <button class="write-btn" onclick="location.href='write.html'">글쓰기</button>
-    
-    <table>
-        <colgroup>
-            <col style="width: 7%;"> <!-- 번호 -->
-            <col style="width: 60%;"> <!-- 제목 -->
-            <col style="width: 13%;"> <!-- 작성자 -->
-            <col style="width: 13%;"> <!-- 등록일 -->
-            <col style="width: 7%;"> <!-- 조회수 -->
-        </colgroup>
-        <tr>
-            <th>번호</th>
-            <th>제목</th>
-            <th>작성자</th>
-            <th>등록일</th>
-            <th>조회수</th>
-        </tr>
-    
-        <tbody id="post-list">
-            <tr><td colspan="5">불러오는 중...</td></tr>
-        </tbody>
-    </table>
+    <div class="table-container">
+        <button class="write-btn" onclick="location.href='write.html'">글쓰기</button>
+        
+        <table>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>등록일</th>
+                <th>조회수</th>
+            </tr>
+            <tbody id="post-list">
+                <tr><td colspan="5">불러오는 중...</td></tr>
+            </tbody>
+        </table>
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
