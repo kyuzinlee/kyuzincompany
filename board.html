@@ -27,6 +27,14 @@
             background: #007bff;
             color: white;
         }
+
+            /* ✅ 게시글 목록 테이블 각 열의 너비 조정 */
+    th:nth-child(1), td:nth-child(1) { width: 5%; }  /* 번호 */
+    th:nth-child(2), td:nth-child(2) { width: 67%; } /* 제목 */
+    th:nth-child(3), td:nth-child(3) { width: 10%; } /* 작성자 */
+    th:nth-child(4), td:nth-child(4) { width: 10%; } /* 등록일 */
+    th:nth-child(5), td:nth-child(5) { width: 8%; } /* 조회수 */
+
         .table-container {
     width: 1200px; /* 📌 테이블 크기를 1200px로 고정 */
     margin: auto;
@@ -34,7 +42,7 @@
 }
 
 .write-btn {
-    padding: 10px 20px;
+    padding: 10px 10px;
     background: #007bff;
     color: white;
     border: none;
