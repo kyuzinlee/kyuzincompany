@@ -40,6 +40,30 @@
     h1 {
         margin-bottom: 50px; /* 숫자를 줄이면 간격이 좁아지고, 늘리면 넓어짐 */
     }
+
+    @media (max-width: 768px) {
+    .write-btn {
+        position: static;
+        display: block;
+        width: 90%;
+        margin: 10px auto;
+        text-align: center;
+    }
+
+    table {
+        width: 95%;
+    }
+
+    th, td {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    td {
+        word-break: break-word;
+    }
+}
+
 </style>
 </head>
 <body>
