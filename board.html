@@ -88,28 +88,27 @@ th:nth-child(5), td:nth-child(5) { width: 10%; }  /* 조회수 */
 
 /* 반응형 조정 (모바일 최적화) */
 @media (max-width: 768px) {
-    .board-container {
-        width: 100%;
-        padding: 15px;
-    }
-
-    /* ✅ 모바일에서는 폰트 크기 축소 */
-    th, td {
-        font-size: 14px;  /* 기존보다 작은 글자 */
-        padding: 5px;  /* 셀 안의 패딩 줄이기 */
-    }
-
-    /* ✅ 테이블 크기 조정 (가로 스크롤 허용) */
     .table-container {
         overflow-x: auto; /* 📌 모바일에서는 가로 스크롤 허용 */
+        display: block;
     }
 
-    /* ✅ 테이블 열 크기 조정 - 모바일에서는 좀 더 압축 */
-    th:nth-child(1), td:nth-child(1) { width: 10%; }  /* 번호 */
-    th:nth-child(2), td:nth-child(2) { width: 35%; }  /* 제목 */
-    th:nth-child(3), td:nth-child(3) { width: 20%; }  /* 작성자 */
-    th:nth-child(4), td:nth-child(4) { width: 25%; }  /* 등록일 */
-    th:nth-child(5), td:nth-child(5) { width: 10%; }  /* 조회수 */
+    table {
+        width: 100%;
+        min-width: 600px; /* 📌 모바일에서도 최소한의 가독성 유지 */
+        font-size: 14px; /* 📌 글자 크기 줄이기 */
+    }
+
+    th, td {
+        padding: 8px; /* 📌 모바일에서 줄 간격 조정 */
+    }
+
+    /* 📌 모바일 전용 테이블 열 크기 */
+    th:nth-child(1), td:nth-child(1) { width: 10%; } /* 번호 */
+    th:nth-child(2), td:nth-child(2) { width: 40%; } /* 제목 */
+    th:nth-child(3), td:nth-child(3) { width: 20%; } /* 작성자 */
+    th:nth-child(4), td:nth-child(4) { width: 20%; } /* 등록일 */
+    th:nth-child(5), td:nth-child(5) { width: 10%; } /* 조회수 */
 
     /* ✅ 글쓰기 버튼 스타일 조정 */
     .write-btn {
