@@ -5,109 +5,130 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시판 목록</title>
     <style>
-body {
-    display: flex;
-    justify-content: center; /* ✅ 화면 가운데 정렬 */
-    align-items: flex-start; /* ✅ 위쪽 정렬 유지 */
-    min-height: 100vh;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    padding-top: 60px; /* 네비게이션 바 높이만큼 여백 추가 */
-    width: 100vw; /* ✅ 화면 너비를 100%로 설정하여 모바일에서도 정렬 유지 */
-    overflow-x: hidden; /* ✅ 가로 스크롤 방지 */
-}
+        /* 기본 설정 */
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding-top: -100px; /* ✅ 네비게이션 바와 제목 간격 조정 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+        }
 
+        /* 전체 컨테이너 */
+        .board-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 테이블 상단 (제목 + 글쓰기 버튼) */
+        .table-header {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* 제목을 중앙 정렬 */
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        /* 제목 스타일 */
+        h1 {
+            margin-bottom: 00px; /* ✅ 제목과 게시판 목록 간격 조정 */
+        }
+
+        /* 글쓰기 버튼 */
+        .write-btn {
+            position: absolute;
+            right: -10px; /* ✅ 버튼을 오른쪽 끝에 정렬 */
+            top: 50px; /* ✅ 버튼을 올바르게 위치 조정 */
+            padding: 7px 30px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            min-width: 120px;
+        }
+
+        /* 테이블 스타일 */
+        .table-container {
+            width: 100%;
+            background: white;
+            padding: 10px;
+        }
 
         table {
-            width: 1200px; /* ✅ 테이블 고정 크기 설정 */
-            margin: auto; /* ✅ 가운데 정렬 */
+            width: 100%;
             background: white;
             border-collapse: collapse;
         }
+
         th, td {
             padding: 10px;
             border-bottom: 1px solid #ddd;
         }
+
         th {
             background: #007bff;
             color: white;
         }
 
-            /* ✅ 게시글 목록 테이블 각 열의 너비 조정 */
-    th:nth-child(1), td:nth-child(1) { width: 5%; }  /* 번호 */
-    th:nth-child(2), td:nth-child(2) { width: 67%; } /* 제목 */
-    th:nth-child(3), td:nth-child(3) { width: 10%; } /* 작성자 */
-    th:nth-child(4), td:nth-child(4) { width: 10%; } /* 등록일 */
-    th:nth-child(5), td:nth-child(5) { width: 8%; } /* 조회수 */
+        /* 반응형 조정 (모바일 최적화) */
+        @media (max-width: 768px) {
+            .board-container {
+                width: 95%;
+            }
 
-    .table-container {
-    width: 90%; /* ✅ 화면 너비의 90%만 차지하도록 설정 */
-    max-width: 1200px; /* ✅ 최대 1200px까지만 커지도록 제한 */
-    background: white;
-    padding: 20px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    position: relative; /* ✅ 글쓰기 버튼 위치 고정을 위해 필요 */
-}
+            .table-header {
+                flex-direction: column;
+                align-items: center;
+            }
 
-
-.write-btn {
-    padding: 10px 20px;
-    background: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    text-align: center;
-    min-width: 120px;
-
-    position: absolute;
-    top: -50px; /* 📌 테이블 위쪽으로 배치 */
-    right: 20px; /* ✅ 테이블 내부에서 오른쪽 여백 유지 */
-}
-
-
-    /* ✅ 자유게시판 제목과 목록 사이 여백 조정 */
-    h1 {
-        margin-bottom: 50px; /* 숫자를 줄이면 간격이 좁아지고, 늘리면 넓어짐 */
-    }
-
-    .table-container {
-    width: 90%; /* ✅ 화면 너비의 90%만 차지하도록 설정 */
-    max-width: 1200px; /* ✅ 최대 1200px까지만 커지도록 제한 */
-    background: white;
-    padding: 20px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-}
-
-</style>
+            .write-btn {
+                position: static;
+                width: 100%;
+                text-align: center;
+                margin-top: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- 네비게이션 바 -->
     <nav style="background-color: #333; padding: 10px; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;">
         <a href="index.html" style="color: white; margin: 10px;">홈</a>
         <a href="board.html" style="color: white; margin: 10px;">문의 게시판</a>
     </nav>
 
-    <h1>자유게시판</h1>
+    <div class="board-container">
+        <!-- 제목 + 글쓰기 버튼 -->
+        <div class="table-header">
+            <h1>자유게시판</h1>
+            <button class="write-btn" onclick="location.href='write.html'">글쓰기</button>
+        </div>
 
-    <div class="table-container">
-        <button class="write-btn" onclick="location.href='write.html'">글쓰기</button>
-    
-        <table>
-            <tr>
-                <th>번호</th>
-                <th>제목</th>
-                <th>작성자</th>
-                <th>등록일</th>
-                <th>조회수</th>
-            </tr>
-            <tbody id="post-list">
-                <tr><td colspan="5">불러오는 중...</td></tr>
-            </tbody>
-        </table>
+        <!-- 테이블 -->
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>등록일</th>
+                    <th>조회수</th>
+                </tr>
+                <tbody id="post-list">
+                    <tr><td colspan="5">불러오는 중...</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-    
-    
-    
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
