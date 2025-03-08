@@ -68,6 +68,14 @@
             border-collapse: collapse;
         }
 
+        /* 📌 테이블 열 크기 조정 - 원하는 비율로 직접 조정 가능 */
+th:nth-child(1), td:nth-child(1) { width: 10%; }  /* 번호 */
+th:nth-child(2), td:nth-child(2) { width: 50%; }  /* 제목 */
+th:nth-child(3), td:nth-child(3) { width: 15%; }  /* 작성자 */
+th:nth-child(4), td:nth-child(4) { width: 15%; }  /* 등록일 */
+th:nth-child(5), td:nth-child(5) { width: 10%; }  /* 조회수 */
+
+
         th, td {
             padding: 10px;
             border-bottom: 1px solid #ddd;
