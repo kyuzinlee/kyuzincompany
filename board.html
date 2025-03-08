@@ -5,14 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시판 목록</title>
     <style>
-    body {
+body {
+    display: flex;
+    justify-content: center; /* ✅ 화면 가운데 정렬 */
+    align-items: flex-start; /* ✅ 위쪽 정렬 유지 */
+    min-height: 100vh;
+    margin: 0;
     font-family: Arial, sans-serif;
-    text-align: center;
     background-color: #f4f4f4;
     padding-top: 60px; /* 네비게이션 바 높이만큼 여백 추가 */
-    min-width: 1200px; /* ✅ 추가 */
-    overflow-x: auto;  /* ✅ 추가 */
+    width: 100vw; /* ✅ 화면 너비를 100%로 설정하여 모바일에서도 정렬 유지 */
+    overflow-x: hidden; /* ✅ 가로 스크롤 방지 */
 }
+
+
         table {
             width: 1200px; /* ✅ 테이블 고정 크기 설정 */
             margin: auto; /* ✅ 가운데 정렬 */
@@ -35,14 +41,18 @@
     th:nth-child(4), td:nth-child(4) { width: 10%; } /* 등록일 */
     th:nth-child(5), td:nth-child(5) { width: 8%; } /* 조회수 */
 
-        .table-container {
-    width: 1200px; /* 📌 테이블 크기를 1200px로 고정 */
-    margin: auto;
-    position: relative;
+    .table-container {
+    width: 90%; /* ✅ 화면 너비의 90%만 차지하도록 설정 */
+    max-width: 1200px; /* ✅ 최대 1200px까지만 커지도록 제한 */
+    background: white;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    position: relative; /* ✅ 글쓰기 버튼 위치 고정을 위해 필요 */
 }
 
+
 .write-btn {
-    padding: 10px 10px;
+    padding: 10px 20px;
     background: #007bff;
     color: white;
     border: none;
@@ -52,13 +62,22 @@
 
     position: absolute;
     top: -50px; /* 📌 테이블 위쪽으로 배치 */
-    right: 0px; /* ✅ 테이블의 오른쪽 끝에 정확히 정렬 */
+    right: 20px; /* ✅ 테이블 내부에서 오른쪽 여백 유지 */
 }
+
 
     /* ✅ 자유게시판 제목과 목록 사이 여백 조정 */
     h1 {
         margin-bottom: 50px; /* 숫자를 줄이면 간격이 좁아지고, 늘리면 넓어짐 */
     }
+
+    .table-container {
+    width: 90%; /* ✅ 화면 너비의 90%만 차지하도록 설정 */
+    max-width: 1200px; /* ✅ 최대 1200px까지만 커지도록 제한 */
+    background: white;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
 
 </style>
 </head>
@@ -72,7 +91,7 @@
 
     <div class="table-container">
         <button class="write-btn" onclick="location.href='write.html'">글쓰기</button>
-        
+    
         <table>
             <tr>
                 <th>번호</th>
@@ -85,6 +104,9 @@
                 <tr><td colspan="5">불러오는 중...</td></tr>
             </tbody>
         </table>
+    </div>
+    
+    
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
